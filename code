@@ -1,0 +1,24 @@
+import paho.mqtt.client as mqtt
+
+broker_url = "192.168.0.161" #Linux PC with mosquitto broker running
+broker_port = 1883 #Default port for unencrypted messages
+
+#To connect to the broker
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+
+#When disconnected from the broker
+def on_disconnect(client, userdata, rc):
+    print("Client got disconnected!")
+
+#To receive published message
+def on_message(client, userdata, message):
+    print(message.payload.decode())
+
+while True:   
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(broker_url, broker_port)
+    client.subscribe("ACP/Testing", qos=2)
+    client.loop_forever()
